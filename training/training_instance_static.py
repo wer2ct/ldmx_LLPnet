@@ -57,11 +57,11 @@ def main():
                              training_loader_ = training_loader, 
                              validation_loader_ = validation_loader, 
                              log_dir = output_path, 
-                             log_prefix = 'module_test', 
+                             log_prefix = 'static_run_extended', 
                              optimizer = 'Adam', 
-                             lr = 0.0001, 
-                             max_epochs_ = 10,
-                             use_scheduler = True) #this scheduler can be configured by hand. Default is true, minimizes validation loss. 
+                             lr = 0.001, 
+                             max_epochs_ = 40,
+                             use_scheduler = False) #this scheduler can be configured by hand. Default is true, minimizes validation loss. 
     
 
 main()

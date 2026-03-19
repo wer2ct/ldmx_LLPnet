@@ -32,7 +32,7 @@ def run_train(model: nn.Module,
               log_prefix: str = 'GNN_model_v3_dynamic_kv3', 
               optimizer: str = 'Adam', 
               lr: float = 0.001, 
-              max_epochs_: int = 15,
+              max_epochs_: int = 40,
               use_scheduler = True): #this scheduler can be configured by hand. Default is true, minimizes validation loss. 
     
     #Setup the device. Please use a GPU if you can! 
@@ -90,10 +90,20 @@ def run_train(model: nn.Module,
             for training_data in training_loader_: 
             
                 training_data = training_data.to(device)
+                assert not torch.isnan(training_data.x).any(), "NaN in input features!"
+                assert not torch.isinf(training_data.x).any(), "Inf in input features!"
                 
                 optimizer.zero_grad()
                 model_out = model(training_data)
-                loss = criterion(model_out, training_data.y)
+
+                if torch.isnan(model_out).any():
+                    print("NaN in model output!")
+                    print("x NaN:", torch.isnan(training_data.x).any())
+                    print("y dtype:", training_data.y.dtype)
+                    print("batch unique:", training_data.batch.unique())
+                    break
+                    
+                loss = criterion(model_out, training_data.y.long())
 
                 #Backpropagation
                 loss.backward()
@@ -101,6 +111,7 @@ def run_train(model: nn.Module,
 
                 #logging the training loss
                 total_train_loss += loss.item()
+                #print(total_train_loss)
                 train_writer.writerow([iteration, epoch, loss.item()])
                 iteration += 1
 

@@ -46,10 +46,10 @@ def main():
                                                                                 drop_last_ = True)
     #Declare our classifier
     print("Declaring our classifier")
-    classifier = arch.GNN_v3_dynamic(in_channels = 4, 
+    classifier = arch.GNN_v3_static(in_channels = 4, 
                                      hc1 = 10, hc2 = 20, hc3 = 40, hc4 = 50, 
                                      fc1 = 25, fc2 = 12, fc3 = 6, 
-                                     k1 = 33, k2 = 25, k3 = 17, k4 = 9,
+                                     #k1 = 33, k2 = 25, k3 = 17, k4 = 9,
                                      out_channels = 2)
     #Run training
     print("Beginning Training (!!)")
@@ -59,7 +59,7 @@ def main():
                              log_dir = output_path, 
                              log_prefix = 'module_test', 
                              optimizer = 'Adam', 
-                             lr = 0.001, 
+                             lr = 0.0001, 
                              max_epochs_ = 10,
                              use_scheduler = True) #this scheduler can be configured by hand. Default is true, minimizes validation loss. 
     

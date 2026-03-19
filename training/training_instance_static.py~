@@ -59,9 +59,9 @@ def main():
                              log_dir = output_path, 
                              log_prefix = 'module_test', 
                              optimizer = 'Adam', 
-                             lr = 0.0001, 
+                             lr = 0.001, 
                              max_epochs_ = 10,
-                             use_scheduler = True) #this scheduler can be configured by hand. Default is true, minimizes validation loss. 
+                             use_scheduler = False) #this scheduler can be configured by hand. Default is true, minimizes validation loss. 
     
 
 main()

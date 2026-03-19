@@ -27,23 +27,37 @@ torch.manual_seed(SEED)
 #Dataloader creation. Function takes argument of a training and validation directory path, returns a training loader and validation loader. The repositories and splits have to be done on their own in a different script. There is a Jupyter Notebook in the pre-processing directory that can handle this. 
 def CreateDataLoaders(training_directory, validation_directory, batch_size_ = 500, drop_last_ = True):
     
-    #These lines assume that our signal files start with the char m (which is true by default in signal pre-processing)
-    #They also assume that our background files start with the char b (which is true by default in background pre-processing)
-    #This will need to be updated if someone changes naming conventions
-    signal_training_paths = glob.glob(os.path.join(training_directory, "m*"))
-    bkgs_training_paths = glob.glob(os.path.join(training_directory, "b*"))
-    signal_validation_paths = glob.glob(os.path.join(validation_directory, "m*"))
-    bkgs_validation_paths = glob.glob(os.path.join(validation_directory, "b*"))
+    signal_training_paths = glob.glob(os.path.join(training_directory, "training_b*"))
+    enriched_training_paths = glob.glob(os.path.join(training_directory, "training_enriched*"))
+    #dimuon_training_paths = glob.glob(os.path.join(training_directory, "training_dimuon*"))
 
+    #training_background_list = enriched_training_paths + dimuon_training_paths
+    
+    signal_validation_paths = glob.glob(os.path.join(validation_directory, "validation_signal*"))
+    enriched_validation_paths = glob.glob(os.path.join(validation_directory, "validation_enriched*"))
+    #dimuon_validation_paths = glob.glob(os.path.join(validation_directory, "validation_dimuon*"))
+
+    #validation_background_list = enriched_validation_paths + dimuon_validation_paths
+    
     #Load the signal training files
     print("Beginning to load training files")
     signal_training_file_list = []
     for path in signal_training_paths:
+        #print(path)
         signal_training_file_list.append((torch.load(path, weights_only = False)))
         print(f"Loaded: {path}")
 
+    training_background = torch.load(enriched_training_paths[0], weights_only = False)
+
+    """
     #Load the background training files
-    training_background = torch.load(bkgs_training_paths[0], weights_only = False)
+    training_background = []
+    for path in training_background_list:
+        #print(path)
+        training_background.append((torch.load(path, weights_only = False)))
+        print(f"Loaded: {path}")
+    """
+    
     print("Loaded all training files")
     
     #Concatenating our training files, creating a training loader
@@ -56,17 +70,28 @@ def CreateDataLoaders(training_directory, validation_directory, batch_size_ = 50
     print("Beginning to load validation files")
     signal_val_file_list = []
     for path in signal_validation_paths:
+        #print(path)
         signal_val_file_list.append((torch.load(path, weights_only = False)))
         print(f"Loaded: {path}")
 
-    #Now loading the background validation files
-    val_background = torch.load(bkgs_validation_paths[0], weights_only = False)
+    validation_background = torch.load(enriched_validation_paths[0], weights_only = False)
 
+    """
+    #Now loading the background validation files
+    validation_background = []
+    for path in validation_background_list:
+        #print(path)
+        validation_background.append((torch.load(path, weights_only = False)))
+        print(f"Loaded: {path}")
+    """
+    
     #Concatenating our validation files, creating a validation loader
-    full_dataset_list_val = val_background + signal_val_file_list
+    full_dataset_list_val = validation_background + signal_val_file_list
+    print(len(full_dataset_list_val))
     full_dataset_val = ConcatDataset(full_dataset_list_val)
     validation_loader =  DataLoader(full_dataset_val, batch_size = batch_size_, drop_last = drop_last_, shuffle=True, num_workers=1)
-
+    print(f'Validating on {len(validation_loader)*validation_loader.batch_size} total graphs')
+    
     return(training_loader, validation_loader)
 
 
