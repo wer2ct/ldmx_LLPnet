@@ -7,4 +7,4 @@
 #SBATCH --partition=standard
 #SBATCH -A ldmxuva
  
-python3 /sfs/gpfs/tardis/home/wer2ct/ldmx_LLPnet/pre_processing/GraphMaker.py /standard/ldmxuva/gnn_files/note_stuff/training_npz/enriched/enriched_nuclear_training_filtered_background_${SLURM_ARRAY_TASK_ID}* /standard/ldmxuva/gnn_files/note_stuff/training_graphs/enriched training_enriched
+python3 /sfs/gpfs/tardis/home/wer2ct/ldmx_LLPnet/pre_processing/GraphMaker.py /standard/ldmxuva/gnn_files/note_stuff/larger_test_npz/enriched_nuclear_validation_filtered_background_${SLURM_ARRAY_TASK_ID}* /standard/ldmxuva/gnn_files/note_stuff/larger_test_graphs validation_enriched
